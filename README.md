@@ -1,7 +1,9 @@
 DevOps Portfolio
+
 Welcome to my DevOps Portfolio! This repository showcases my journey in DevOps, featuring hands-on projects, tools, and techniques that demonstrate my skills and expertise in building, automating, and managing infrastructure.
 
 Overview
+
 This portfolio includes projects and examples of:
 
 CI/CD pipelines
