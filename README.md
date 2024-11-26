@@ -17,8 +17,8 @@ Jenkins
 AWS/GCP/Azure
 Ansible/Terraform
 Projects
-[Project 1: Placeholder Title]
-Description coming soon.
+[Project 1: Simple Git Version Control Project]
+Description: Create a version-controlled project using Git to track code changes.
 [Project 2: Placeholder Title]
 Description coming soon.
 Stay tuned as I continue to update this repository with more projects and learning outcomes!
