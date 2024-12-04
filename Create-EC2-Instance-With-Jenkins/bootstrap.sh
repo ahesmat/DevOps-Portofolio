@@ -12,3 +12,4 @@ unzip awscliv2.zip
 sudo ./aws/install
 rm -r awscliv2.zip
 rm -r aws
+terraform init
