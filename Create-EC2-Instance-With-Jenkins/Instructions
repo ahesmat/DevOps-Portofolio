@@ -1,13 +1,25 @@
-1- Install Terraform on Ubuntu, following steps from terraform documentations
-2- Creating an AWS user with EC2 privilige
-3- Install AWS CLI on ubuntu:
+EC2 Jenkins Deployment Steps:
+1- Run bootstrap.sh: 
+    This script will:
+       Install Terraform and AWS CLI on your machine.
+       Initialize Terraform by running terraform init.
 
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
+2- Run configure-aws.sh:
+    This script will:
+       Take the AWS Access Key ID as the first argument and the AWS Secret Access Key as the second argument.
+       Configure the AWS CLI with these credentials, allowing it to communicate with your AWS account.
 
-4- Configure the AWS credentials through the CLI by adding the new user details:
+3- Run provision-EC2-Instance.sh:
+    This script will:
+      Provision an EC2 instance using Terraform.
+      Install Jenkins on the EC2 instance.
+      Print the Jenkins URL and first-time admin password to the standard output.
 
-aws configure
-
-
+4- Run destroy-hardware.sh:
+    This script will:
+       Destroy the EC2 instance and clean up the resources provisioned by Terraform.
+  
+5- login-to-created-instance.sh:
+    This is a temporary script that will be generated after the EC2 instance is created.
+     It will be used to log into the instance but will be automatically deleted once the instance is destroyed.
+    This script is added to .gitignore to ensure it is not pushed to the remote repository.
