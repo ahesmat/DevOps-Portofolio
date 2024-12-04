@@ -73,7 +73,7 @@ provisioner "remote-exec" {
       type        = "ssh"
       host        = self.public_ip
       user        = "ubuntu"
-      private_key = file("/home/cloud_user/DevOps-Basics/main/Create-EC2-Instance-With-Jenkins/jenkins-key.pem")
+      private_key = file("/home/cloud_user/DevOps-Portofolio/Create-EC2-Instance-With-Jenkins/jenkins-key.pem")
       timeout     = "4m"
    }
 }
