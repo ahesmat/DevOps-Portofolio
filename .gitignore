@@ -2,3 +2,4 @@ Create-EC2-Instance-With-Jenkins/.terraform
 Create-EC2-Instance-With-Jenkins/jenkins-key.pem
 Create-EC2-Instance-With-Jenkins/terraform.tfstate
 Create-EC2-Instance-With-Jenkins/terraform.tfstate.backup
+Create-EC2-Instance-With-Jenkins/.terraform.lock.hcl
