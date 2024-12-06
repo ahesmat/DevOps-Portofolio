@@ -34,7 +34,7 @@ git config --global user.name $USER_NAME
 ssh-keygen -t ed25519 -C $email -f ~/tmp/key_git_repo -N ""
 eval "$(ssh-agent -s)"
 ssh-add ~/tmp/key_git_repo
-clear
+#clear
 echo "      "
 echo "      "
 echo "Your key is:"
