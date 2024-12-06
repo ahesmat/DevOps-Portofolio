@@ -24,7 +24,7 @@
 # Date: 06-12-2024
 # ===========================================================
 clear
-mkdir /tmp
+mkdir ~/tmp
 cd ~/tmp
 rm *key*
 echo "Please Enter your email address"
