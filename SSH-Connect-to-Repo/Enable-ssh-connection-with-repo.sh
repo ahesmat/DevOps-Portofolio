@@ -24,13 +24,11 @@
 # Date: 06-12-2024
 # ===========================================================
 clear
-mkdir ~/tmp
-cd ~/tmp
-rm *key*
-SSH_URL=`git remote -v | head -1 | awk -F"//" '{print $2}' | awk '{print"git@" $1}'`
+mkdir -p ~/tmp
+REPO=`git remote -v | head -1 | awk -F"//" '{print $2}' | awk '{print"git@" $1}'`
+SSH_URL=${REPO/\//:}
 echo "Please Enter your email address"
 read email
-echo "SSH_URL_is" $SSH_URL
 ssh-keygen -t ed25519 -C $email -f ~/tmp/key_git_repo -N ""
 eval "$(ssh-agent -s)"
 ssh-add ~/tmp/key_git_repo
@@ -46,7 +44,6 @@ echo "      "
 echo "      "
 echo "Please copy the key into your repo, once done, please press any key to continue"
 read -n 1 -s
-echo "2-SSH-URL-Is "$SSH_URL
 git remote set-url origin $SSH_URL
 ssh -T git@github.com
-rm *key*
+rm -r ~/tmp
