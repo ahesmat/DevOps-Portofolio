@@ -23,7 +23,11 @@
 # Date: 06-12-2024
 # ===========================================================
 clear
-SSH_URL=`git remote -v | head -1 | awk -F"//" '{print $2}' | awk '{print"git@" $1}'`
+mkdir -p ~/tmp
+REPO=`git remote -v | head -1 | awk -F"//" '{print $2}' | awk '{print $1}'`
+echo $REPO
+SSH_URL=${REPO/\//:}
+echo $SSH_URL
 USER_NAME=`git remote -v | head -1 | awk -F"/" '{print $2}'`
 mkdir ~/tmp
 echo "Please Enter your email address"
