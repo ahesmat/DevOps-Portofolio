@@ -28,8 +28,7 @@ cd ~/tmp
 rm *key*
 echo "Please Enter your email address"
 read email
-echo "Please Enter the SSH URL to your repo"
-read SSH_URL
+SSH_URL=`git remote -v | head -1 | awk -F"//" '{print $2}' | awk '{print"git@" $1}'`
 ssh-keygen -t ed25519 -C $email -f ~/tmp/key_git_repo -N ""
 eval "$(ssh-agent -s)"
 ssh-add ~/tmp/key_git_repo
@@ -45,5 +44,7 @@ echo "      "
 echo "      "
 echo "Please copy the key into your repo, once done, please press any key to continue"
 read -n 1 -s
-#git remote set-url origin $SSH_URL
-#ssh -T git@github.com
+echo $SSH_URL
+git remote set-url origin $SSH_URL
+ssh -T git@github.com
+rm *key*
