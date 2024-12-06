@@ -52,4 +52,3 @@ echo "Please copy the key into your repo, once done, please press any key to con
 read -n 1 -s
 git remote set-url origin $SSH_URL
 ssh -T git@github.com
-rm -r ~/tmp
