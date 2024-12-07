@@ -1,4 +1,3 @@
-#!/bin/bash
 
 # ===========================================================
 # SCRIPT INTRODUCTION
@@ -25,14 +24,28 @@
 # ===========================================================
 clear
 mkdir -p ~/tmp
+<<<<<<< HEAD
 REPO=`git remote -v | head -1 | awk -F"//" '{print $2}' | awk '{print"git@" $1}'`
 SSH_URL=${REPO/\//:}
 echo "Please Enter your email address"
 read email
+=======
+REPO=`git remote -v | head -1 | awk -F"//" '{print $2}' | awk '{print $1}'`
+echo $REPO
+SSH_URL=${REPO/\//:}
+echo $SSH_URL
+USER_NAME=`git remote -v | head -1 | awk -F"/" '{print $2}'`
+mkdir ~/tmp
+echo "Please Enter your email address"
+read email
+echo "SSH_URL_is" $SSH_URL
+git config --global user.email $email
+git config --global user.name $USER_NAME
+>>>>>>> b49c1e4ded727719b1002f820e4d9cd18bae24ed
 ssh-keygen -t ed25519 -C $email -f ~/tmp/key_git_repo -N ""
 eval "$(ssh-agent -s)"
 ssh-add ~/tmp/key_git_repo
-clear
+#clear
 echo "      "
 echo "      "
 echo "Your key is:"
@@ -46,4 +59,7 @@ echo "Please copy the key into your repo, once done, please press any key to con
 read -n 1 -s
 git remote set-url origin $SSH_URL
 ssh -T git@github.com
+<<<<<<< HEAD
 rm -r ~/tmp
+=======
+>>>>>>> b49c1e4ded727719b1002f820e4d9cd18bae24ed
