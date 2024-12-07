@@ -1,3 +1,4 @@
+#!/bin/bash
 
 # ===========================================================
 # SCRIPT INTRODUCTION
@@ -23,29 +24,17 @@
 # Date: 06-12-2024
 # ===========================================================
 clear
+rm -r ~/tmp
 mkdir -p ~/tmp
-<<<<<<< HEAD
 REPO=`git remote -v | head -1 | awk -F"//" '{print $2}' | awk '{print"git@" $1}'`
+USERNAME=`git remote -v | head -1 | awk -F"/" '{print$4}'`
 SSH_URL=${REPO/\//:}
 echo "Please Enter your email address"
-read email
-=======
-REPO=`git remote -v | head -1 | awk -F"//" '{print $2}' | awk '{print $1}'`
-echo $REPO
-SSH_URL=${REPO/\//:}
-echo $SSH_URL
-USER_NAME=`git remote -v | head -1 | awk -F"/" '{print $2}'`
-mkdir ~/tmp
-echo "Please Enter your email address"
-read email
-echo "SSH_URL_is" $SSH_URL
-git config --global user.email $email
-git config --global user.name $USER_NAME
->>>>>>> b49c1e4ded727719b1002f820e4d9cd18bae24ed
-ssh-keygen -t ed25519 -C $email -f ~/tmp/key_git_repo -N ""
-eval "$(ssh-agent -s)"
-ssh-add ~/tmp/key_git_repo
-#clear
+read EMAIL
+ssh-keygen -t ed25519 -C $EMAIL -f ~/tmp/key_git_repo -N ""
+git config user.name $USERNAME
+git config user.email $EMAIL
+clear
 echo "      "
 echo "      "
 echo "Your key is:"
@@ -58,8 +47,17 @@ echo "      "
 echo "Please copy the key into your repo, once done, please press any key to continue"
 read -n 1 -s
 git remote set-url origin $SSH_URL
+eval "$(ssh-agent -s)"
+ssh-add ~/tmp/key_git_repo
 ssh -T git@github.com
-<<<<<<< HEAD
-rm -r ~/tmp
-=======
->>>>>>> b49c1e4ded727719b1002f820e4d9cd18bae24ed
+clear
+echo "Local Repo is now connected to remote repo through SSH without the need to provide credentials"
+echo "                                                                                              "
+echo "                                                                                              "
+echo "                                                                                              "
+echo "Before start, please run the below command"
+echo "                                                                                              "
+echo "                                                                                              "
+echo "export SSH_AUTH_SOCK=$SSH_AUTH_SOCK"
+echo "                                                     "
+echo "						           " 
