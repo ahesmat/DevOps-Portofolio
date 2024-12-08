@@ -1,4 +1,4 @@
-# Installing Terraform and AWS CLI
+# Installing Terraform,AWS CLI and ANSIBLE
 echo "#########################################Installing Terraform#################################################"
 
 wget -O - https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
@@ -14,3 +14,10 @@ rm -r awscliv2.zip
 rm -r aws
 terraform init
 
+
+echo "########################################Installing ANSIBLE####################################################"
+
+sudo apt update -y
+sudo apt install software-properties-common -y
+sudo add-apt-repository --yes --update ppa:ansible/ansible
+sudo apt install ansible -y
