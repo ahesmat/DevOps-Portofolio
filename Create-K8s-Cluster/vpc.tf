@@ -2,10 +2,8 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
-
-
 resource "aws_vpc" "k8s_vpc" {
-  cidr_block           = "10.0.0.0/16"
+  cidr_block           = var.vpc_cidr
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
@@ -21,16 +19,6 @@ resource "aws_subnet" "public" {
   availability_zone       = data.aws_availability_zones.available.names[count.index]
   tags = {
     Name = "public-subnet-${count.index}"
-  }
-}
-
-resource "aws_subnet" "private" {
-  count             = 3
-  vpc_id            = aws_vpc.k8s_vpc.id
-  cidr_block        = cidrsubnet(aws_vpc.k8s_vpc.cidr_block, 4, count.index + 3)
-  availability_zone = data.aws_availability_zones.available.names[count.index]
-  tags = {
-    Name = "private-subnet-${count.index}"
   }
 }
 
