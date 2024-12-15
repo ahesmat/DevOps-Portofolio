@@ -1,0 +1,44 @@
+module "provider" {
+  source = "./provider"
+}
+
+module "key_pair" {
+
+  source = "./key_pair"
+}
+
+module "vpc" {
+
+  source = "./vpc"
+}
+
+module "subnets" {
+
+  source = "./subnets"
+}
+
+module "routes" {
+
+  source = "./routes"
+}
+
+module "nat_gateways" {
+
+  source = "./nat_gateways"
+}
+
+module "security_groups" {
+
+  source = "./security_groups"
+}
+
+module "elastic_load_balancer" {
+
+  source = "./elastic_load_balancer"
+}
+
+module "JumpBox" {
+
+  source = "./jumpbox"
+}
+
