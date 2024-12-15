@@ -10,3 +10,8 @@ Create-K8s-Cluster/jenkins-key.pem
 Create-K8s-Cluster/terraform.tfstate
 Create-K8s-Cluster/terraform.tfstate.backup
 Create-K8s-Cluster/.terraform.lock.hcl
+**/.terraform
+**/*.pem
+**/terraform.tfstate
+**/terraform.tfstate.backup
+**/.terraform.lock
