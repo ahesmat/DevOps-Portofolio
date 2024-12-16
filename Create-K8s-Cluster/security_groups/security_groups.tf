@@ -2,7 +2,7 @@
 resource "aws_security_group" "elb_sg" {
   name        = "HA-K8s-ELB-SG"
   description = "Allow traffic to the ELB"
-  vpc_id      = aws_vpc.ha_cluster_vpc.id
+  vpc_id      = var.vpc
 
   ingress {
     description = "Allow HTTP traffic"
@@ -37,7 +37,7 @@ resource "aws_security_group" "elb_sg" {
 resource "aws_security_group" "master_sg" {
   name        = "HA-K8s-Master-SG"
   description = "Allow traffic to Kubernetes Master Nodes"
-  vpc_id      = aws_vpc.ha_cluster_vpc.id
+  vpc_id      = var.vpc
 
   ingress {
     description = "Allow communication from ELB to master nodes"
@@ -88,7 +88,7 @@ resource "aws_security_group" "master_sg" {
 resource "aws_security_group" "worker_sg" {
   name        = "HA-K8s-Worker-SG"
   description = "Allow traffic to Kubernetes Worker Nodes"
-  vpc_id      = aws_vpc.ha_cluster_vpc.id
+  vpc_id      = var.vpc
 
   ingress {
     description = "Allow communication from master nodes"
@@ -132,7 +132,7 @@ resource "aws_security_group" "worker_sg" {
 resource "aws_security_group" "jump_sg" {
   name        = "HA-K8s-Jump-SG"
   description = "Allow traffic to Jump Server"
-  vpc_id      = aws_vpc.ha_cluster_vpc.id
+  vpc_id      = var.vpc
 
   ingress {
     description = "Allow communication from outside the cluster"
@@ -152,4 +152,21 @@ resource "aws_security_group" "jump_sg" {
   tags = {
     Name = "HA-K8s-Jump-SG"
   }
+}
+
+# Outputs security_groups
+output "elb_sg_id" {
+  value = aws_security_group.elb_sg.id
+}
+
+output "master_sg_id" {
+  value = aws_security_group.master_sg.id
+}
+
+output "worker_sg_id" {
+  value = aws_security_group.worker_sg.id
+}
+
+output "jump_sg_id" {
+  value = aws_security_group.jump_sg.id
 }

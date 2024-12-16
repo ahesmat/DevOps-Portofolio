@@ -3,8 +3,8 @@ resource "aws_lb" "ha_cluster_alb" {
   name               = "ha-cluster-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.elb_sg.id] # Reference the existing security group
-  subnets            = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
+  security_groups    = [var.elb_sg] # Reference the existing security group
+  subnets            = [var.public_subnet_1, var.public_subnet_2]
 
   enable_deletion_protection = false
 
@@ -18,7 +18,7 @@ resource "aws_lb_target_group" "ha_cluster_target_group" {
   name     = "ha-cluster-tg"
   port     = 80
   protocol = "HTTP"
-  vpc_id   = aws_vpc.ha_cluster_vpc.id
+  vpc_id   = var.vpc_id
 
   health_check {
     path                = "/"
