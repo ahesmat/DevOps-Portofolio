@@ -64,11 +64,11 @@ resource "aws_security_group" "master_sg" {
   }
 
   ingress {
-    description = "Allow SSH access from nodes inside the VPC"
+    description = "Allow public SSH access. Just for sake of simplicity."
     from_port   = 0
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -96,6 +96,14 @@ resource "aws_security_group" "worker_sg" {
     to_port     = 65535
     protocol    = "tcp"
     cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  ingress {
+    description = "Allow communication from ELB on port 80"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    security_groups = [aws_security_group.elb_sg.id]
   }
 
   ingress {

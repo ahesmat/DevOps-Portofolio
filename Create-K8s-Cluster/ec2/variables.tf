@@ -22,3 +22,8 @@ variable "subnet_id" {
   description = "Subnet_Id"
   type        = string
 }
+
+variable "instance_name" {
+  description = "instance_name"
+  type        = string
+}

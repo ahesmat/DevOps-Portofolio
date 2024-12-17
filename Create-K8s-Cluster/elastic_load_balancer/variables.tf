@@ -8,6 +8,11 @@ variable "public_subnet_2" {
  type        = string
 }
 
+variable "public_subnet_3" {
+ description = "The ID of Public Subnet 3"
+ type        = string
+}
+
 variable "elb_sg" {
  description = "The ID of elb_sg"
  type        = string
