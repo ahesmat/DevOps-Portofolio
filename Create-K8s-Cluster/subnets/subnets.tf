@@ -87,4 +87,12 @@ output "private_subnet_2_id" {
 output "private_subnet_3_id" {
   value = aws_subnet.private_subnet_3.id
 }
-
+output "az1" {
+  value = aws_subnet.public_subnet_1.availability_zone
+}
+output "az2" {
+  value = aws_subnet.public_subnet_2.availability_zone
+}
+output "az3" {
+  value = aws_subnet.public_subnet_3.availability_zone
+}

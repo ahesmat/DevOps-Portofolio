@@ -85,7 +85,7 @@ module "ec2-worker-subnet1" {
 
 module "ec2-master-subnet2" {
 
-source        = "./ec2"
+  source        = "./ec2"
   ami_id        = "ami-0866a3c8686eaeeba"
   instance_type = "t2.micro"
   instance_name = "master-subnet2"
@@ -97,7 +97,7 @@ source        = "./ec2"
 
 module "ec2-worker-subnet2" {
 
-source        = "./ec2"
+  source        = "./ec2"
   ami_id        = "ami-0866a3c8686eaeeba"
   instance_type = "t2.micro"
   instance_name = "worker-subnet2"
@@ -109,7 +109,7 @@ source        = "./ec2"
 
 module "ec2-master-subnet3" {
 
-source        = "./ec2"
+  source        = "./ec2"
   ami_id        = "ami-0866a3c8686eaeeba"
   instance_type = "t2.micro"
   instance_name = "master-subnet3"
@@ -122,7 +122,7 @@ source        = "./ec2"
 
 module "ec2-worker-subnet3" {
 
-source        = "./ec2"
+  source        = "./ec2"
   ami_id        = "ami-0866a3c8686eaeeba"
   instance_type = "t2.micro"
   instance_name = "worker-subnet3"
@@ -134,20 +134,62 @@ source        = "./ec2"
 
 
 module "attach-worker-subnet1-to-elb" {
-source   = "./target_group_attachment"
-target_group_arn = module.elastic_load_balancer.target_group_arn
-worker_node_id = module.ec2-worker-subnet1.instance_id
+  source           = "./target_group_attachment"
+  target_group_arn = module.elastic_load_balancer.target_group_arn
+  worker_node_id   = module.ec2-worker-subnet1.instance_id
 }
 
 module "attach-worker-subnet2-to-elb" {
-source   = "./target_group_attachment"
-target_group_arn = module.elastic_load_balancer.target_group_arn
-worker_node_id = module.ec2-worker-subnet2.instance_id
+  source           = "./target_group_attachment"
+  target_group_arn = module.elastic_load_balancer.target_group_arn
+  worker_node_id   = module.ec2-worker-subnet2.instance_id
 }
 
 
 module "attach-worker-subnet3-to-elb" {
-source   = "./target_group_attachment"
-target_group_arn = module.elastic_load_balancer.target_group_arn
-worker_node_id = module.ec2-worker-subnet3.instance_id
+  source           = "./target_group_attachment"
+  target_group_arn = module.elastic_load_balancer.target_group_arn
+  worker_node_id   = module.ec2-worker-subnet3.instance_id
+}
+
+module "attach-master-subnet1-to-ebs" {
+ source           = "./ebs_volume"
+ availability_zone = module.subnets.az1
+ volume_name = "volume-master-subnet1"
+ instance_id = module.ec2-master-subnet1.instance_id
+}
+
+module "attach-master-subnet2-to-ebs" {
+ source           = "./ebs_volume"
+ availability_zone = module.subnets.az2
+ volume_name = "volume-master-subnet2"
+ instance_id = module.ec2-master-subnet2.instance_id
+}
+
+module "attach-master-subnet3-to-ebs" {
+ source           = "./ebs_volume"
+ availability_zone = module.subnets.az3
+ volume_name = "volume-master-subnet3"
+ instance_id = module.ec2-master-subnet3.instance_id
+}
+
+module "attach-worker-subnet1-to-ebs" {
+ source           = "./ebs_volume"
+ availability_zone = module.subnets.az1
+ volume_name = "volume-worker-subnet1"
+ instance_id = module.ec2-worker-subnet1.instance_id
+}
+
+module "attach-worker-subnet2-to-ebs" {
+ source           = "./ebs_volume"
+ availability_zone = module.subnets.az2
+ volume_name = "volume-worker-subnet2"
+ instance_id = module.ec2-worker-subnet2.instance_id
+}
+
+module "attach-worker-subnet3-to-ebs" {
+ source           = "./ebs_volume"
+ availability_zone = module.subnets.az3
+ volume_name = "volume-worker-subnet3"
+ instance_id = module.ec2-worker-subnet3.instance_id
 }
