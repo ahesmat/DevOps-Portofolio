@@ -15,3 +15,7 @@ resource "local_file" "private_key" {
 output "key_name" {
   value = aws_key_pair.generated_key_pair.key_name
 }
+
+output "file_name" {
+  value = local_file.private_key.filename
+    }

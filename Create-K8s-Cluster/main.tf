@@ -59,6 +59,18 @@ module "elastic_load_balancer" {
   elb_sg          = module.security_groups.elb_sg_id
 }
 
+module "ec2-jumpbox" {
+
+  source        = "./ec2"
+  ami_id        = "ami-0866a3c8686eaeeba"
+  instance_type = "t2.micro"
+  instance_name = "JumpBox"
+  key_pair_name = module.key_pair.key_name
+  sg_name       = module.security_groups.jump_sg_id
+  subnet_id     = module.subnets.public_subnet_1_id
+}
+
+
 module "ec2-master-subnet1" {
 
   source        = "./ec2"
@@ -67,7 +79,7 @@ module "ec2-master-subnet1" {
   instance_name = "master-subnet1"
   key_pair_name = module.key_pair.key_name
   sg_name       = module.security_groups.master_sg_id
-  subnet_id     = module.subnets.public_subnet_1_id
+  subnet_id     = module.subnets.private_subnet_1_id
 }
 
 
@@ -79,7 +91,7 @@ module "ec2-worker-subnet1" {
   instance_name = "worker-subnet1"
   key_pair_name = module.key_pair.key_name
   sg_name       = module.security_groups.worker_sg_id
-  subnet_id     = module.subnets.public_subnet_1_id
+  subnet_id     = module.subnets.private_subnet_1_id
 }
 
 
@@ -91,7 +103,7 @@ module "ec2-master-subnet2" {
   instance_name = "master-subnet2"
   key_pair_name = module.key_pair.key_name
   sg_name       = module.security_groups.master_sg_id
-  subnet_id     = module.subnets.public_subnet_2_id
+  subnet_id     = module.subnets.private_subnet_2_id
 }
 
 
@@ -103,7 +115,7 @@ module "ec2-worker-subnet2" {
   instance_name = "worker-subnet2"
   key_pair_name = module.key_pair.key_name
   sg_name       = module.security_groups.worker_sg_id
-  subnet_id     = module.subnets.public_subnet_2_id
+  subnet_id     = module.subnets.private_subnet_2_id
 }
 
 
@@ -115,7 +127,7 @@ module "ec2-master-subnet3" {
   instance_name = "master-subnet3"
   key_pair_name = module.key_pair.key_name
   sg_name       = module.security_groups.master_sg_id
-  subnet_id     = module.subnets.public_subnet_3_id
+  subnet_id     = module.subnets.private_subnet_3_id
 
 }
 
@@ -128,7 +140,7 @@ module "ec2-worker-subnet3" {
   instance_name = "worker-subnet3"
   key_pair_name = module.key_pair.key_name
   sg_name       = module.security_groups.worker_sg_id
-  subnet_id     = module.subnets.public_subnet_3_id
+  subnet_id     = module.subnets.private_subnet_3_id
 
 }
 
@@ -192,4 +204,8 @@ module "attach-worker-subnet3-to-ebs" {
  availability_zone = module.subnets.az3
  volume_name = "volume-worker-subnet3"
  instance_id = module.ec2-worker-subnet3.instance_id
+}
+
+module "ansible-inventory-file-creation" {
+ source  = "./generate_ansible_inventory"
 }
