@@ -206,6 +206,3 @@ module "attach-worker-subnet3-to-ebs" {
  instance_id = module.ec2-worker-subnet3.instance_id
 }
 
-module "ansible-inventory-file-creation" {
- source  = "./generate_ansible_inventory"
-}
