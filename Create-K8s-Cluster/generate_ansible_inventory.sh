@@ -15,7 +15,7 @@
 
             # Create the inventory file
       echo "[all:vars]" > $INVENTORY_FILE
-      echo "ansible_ssh_common_args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -q ubuntu@$JUMP_SERVER_PUBLIC_IP -i $PEM_FILE\"'" >> $INVENTORY_FILE
+      echo "ansible_ssh_common_args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -o StrictHostKeyChecking=no -W %h:%p -q ubuntu@$JUMP_SERVER_PUBLIC_IP -i $PEM_FILE\"'" >> $INVENTORY_FILE
       echo "ansible_user=ubuntu" >> $INVENTORY_FILE
       echo "ansible_ssh_private_key_file=$PEM_FILE" >> $INVENTORY_FILE
       echo "" >> $INVENTORY_FILE

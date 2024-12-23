@@ -1,0 +1,41 @@
+- name: Mount EBS volume to all EC2 instances in the cluster
+  hosts: all
+  become: yes
+  tasks:
+  - name: Ensure the volume is formatted
+    ansible.builtin.command: "mkfs -t xfs /dev/xvdf"
+    register: format_result
+    changed_when: "'already formatted' not in format_result.stderr"
+    failed_when: "'error' in format_result.stderr"
+
+  - name: Ensure mount point directory exists
+    ansible.builtin.file:
+      path: /data
+      state: directory
+      owner: root
+      group: root
+      mode: '0755'
+
+  - name: Ensure the volume is mounted
+    ansible.builtin.mount:
+      path: /data
+      src: /dev/xvdf
+      fstype: xfs
+      state: mounted
+
+  - name: Backup fstab file if not already backed up
+    ansible.builtin.command: "cp /etc/fstab /etc/fstab_bkp"
+    args:
+      creates: /etc/fstab_bkp
+
+  - name: Get the UUID of the volume
+    ansible.builtin.command: "blkid -s UUID -o value /dev/xvdf"
+    register: volume_uuid
+    changed_when: false
+
+  - name: Ensure volume entry exists in fstab
+    ansible.builtin.lineinfile:
+      path: /etc/fstab
+      line: "UUID={{ volume_uuid.stdout }}  /data  xfs  defaults,nofail  0  2"
+      state: present
+
