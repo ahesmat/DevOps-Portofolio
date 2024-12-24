@@ -23,4 +23,20 @@ variable "public_subnet_3" {
  type        = string
 }
 
+variable "private_subnet_1" {
+ description = "The ID of private Subnet 1"
+ type        = string
+}
+
+variable "private_subnet_2" {
+ description = "The ID of private Subnet 2"
+ type        = string
+}
+
+variable "private_subnet_3" {
+ description = "The ID of private Subnet 3"
+ type        = string
+}
+
+
 

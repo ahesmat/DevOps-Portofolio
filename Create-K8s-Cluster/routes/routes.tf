@@ -55,6 +55,22 @@ resource "aws_route_table" "private_route_table_3" {
   }
 }
 
+# Route Table Associations for private Subnets
+resource "aws_route_table_association" "private_subnet_1_association" {
+  subnet_id      = var.private_subnet_1
+  route_table_id = aws_route_table.private_route_table_1.id
+}
+
+resource "aws_route_table_association" "private_subnet_2_association" {
+  subnet_id      = var.private_subnet_2
+  route_table_id = aws_route_table.private_route_table_2.id
+}
+
+resource "aws_route_table_association" "private_subnet_3_association" {
+  subnet_id      = var.private_subnet_3
+  route_table_id = aws_route_table.private_route_table_3.id
+}
+
 # Outputs for Route Tables
 output "public_route_table_id" {
   value = aws_route_table.public_route_table.id

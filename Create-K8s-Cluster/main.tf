@@ -28,6 +28,9 @@ module "routes" {
   public_subnet_1 = module.subnets.public_subnet_1_id
   public_subnet_2 = module.subnets.public_subnet_2_id
   public_subnet_3 = module.subnets.public_subnet_3_id
+  private_subnet_1 = module.subnets.private_subnet_1_id
+private_subnet_2 = module.subnets.private_subnet_2_id
+private_subnet_3 = module.subnets.private_subnet_3_id
 
 }
 

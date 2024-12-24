@@ -1,0 +1,58 @@
+---
+- name: Set up Kubernetes on Ubuntu nodes
+  hosts: all
+  become: yes
+  tasks:
+
+    - name: Add Kubernetes GPG key
+      get_url:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        dest: /tmp/kubernetes-apt-key.gpg
+        mode: '0644'
+
+    - name: Add Kubernetes apt repository
+      apt_repository:
+        repo: "deb https://apt.kubernetes.io/ kubernetes-stable main"
+        state: present
+        filename: kubernetes
+        update_cache: yes
+
+    - name: Add the GPG key to apt keyring
+      command: apt-key add /tmp/kubernetes-apt-key.gpg
+
+    - name: Update apt package index
+      apt:
+        update_cache: yes
+
+    - name: Install Kubernetes packages
+      apt:
+        name:
+          - kubelet
+          - kubeadm
+          - kubectl
+        state: present
+        update_cache: yes
+
+    - name: Mark kubelet to hold at current version
+      apt:
+        name: kubelet
+        state: held
+
+    - name: Ensure Docker is installed
+      apt:
+        name: docker.io
+        state: present
+        update_cache: yes
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Enable Kubernetes services (kubelet)
+      systemd:
+        name: kubelet
+        enabled: yes
+        state: started
+
