@@ -3,7 +3,12 @@ description = "Target group ARN"
 type = string
 }
 
-variable "worker_node_id" {
-description = "Worker Node ID"
+variable "instance_id" {
+description = "Instance ID"
 type = string
+}
+
+variable "port" {
+description = "connecting port"
+type = number
 }

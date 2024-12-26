@@ -1,6 +1,6 @@
 # Elastic Load Balancer (ALB) in Public Subnet 2 (us-east-1b)
 resource "aws_lb" "ha_cluster_alb" {
-  name               = "ha-cluster-alb"
+  name               = var.lb_name
   internal           = false
   load_balancer_type = "application"
   security_groups    = [var.elb_sg] # Reference the existing security group
@@ -9,37 +9,41 @@ resource "aws_lb" "ha_cluster_alb" {
   enable_deletion_protection = false
 
   tags = {
-    Name = "HA-Cluster-ALB"
+    Name = var.lb_name
   }
 }
 
 # Target Group for the ALB
 resource "aws_lb_target_group" "ha_cluster_target_group" {
-  name     = "ha-cluster-tg"
-  port     = 80
-  protocol = "HTTP"
+  name     = var.tg_name
+  port     = var.port
+  protocol = var.protocol
   vpc_id   = var.vpc_id
 
-  health_check {
-    path                = "/"
-    port                = "80"
-    protocol            = "HTTP"
+   dynamic "health_check" {
+     for_each = var.protocol == "HTTP" ? [1] : []
+  content {
+
+    path                = var.path
+    port                = var.port
+    protocol            = var.protocol
     interval            = 30
     timeout             = 5
     healthy_threshold   = 3
     unhealthy_threshold = 3
-  }
 
+       }
+     }
   tags = {
-    Name = "HA-Cluster-Target-Group"
+    Name = var.tg_name
   }
 }
 
 # ALB Listener
 resource "aws_lb_listener" "ha_cluster_listener" {
   load_balancer_arn = aws_lb.ha_cluster_alb.arn
-  port              = "80"
-  protocol          = "HTTP"
+  port              = var.port
+  protocol          = var.protocol
 
   default_action {
     type             = "forward"

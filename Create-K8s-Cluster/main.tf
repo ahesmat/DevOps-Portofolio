@@ -52,14 +52,35 @@ module "security_groups" {
   vpc    = module.vpc.vpc_id
 }
 
-module "elastic_load_balancer" {
+module "elastic_load_balancer_worker" {
 
   source          = "./elastic_load_balancer"
   vpc_id          = module.vpc.vpc_id
   public_subnet_1 = module.subnets.public_subnet_1_id
   public_subnet_2 = module.subnets.public_subnet_2_id
   public_subnet_3 = module.subnets.public_subnet_3_id
-  elb_sg          = module.security_groups.elb_sg_id
+  elb_sg          = module.security_groups.elb_sg_worker_id
+  lb_name         = "WorkersLoadBalancer"
+  tg_name         = "workersTargetGroup"
+  protocol        = "HTTP"
+  port            = 80
+  path            = "/"
+}
+
+
+module "elastic_load_balancer_master" {
+
+  source          = "./elastic_load_balancer"
+  vpc_id          = module.vpc.vpc_id
+  public_subnet_1 = module.subnets.public_subnet_1_id
+  public_subnet_2 = module.subnets.public_subnet_2_id
+  public_subnet_3 = module.subnets.public_subnet_3_id
+  elb_sg          = module.security_groups.elb_sg_master_id
+  lb_name         = "MastersLoadBalancer"
+  tg_name         = "MastersTargetGroup"
+  protocol        = "HTTPS"
+  port            = 6443
+  path            = "/healthz"
 }
 
 module "ec2-jumpbox" {
@@ -147,24 +168,48 @@ module "ec2-worker-subnet3" {
 
 }
 
+module "attach-master-subnet1-to-elb" {
+  source           = "./target_group_attachment"
+  target_group_arn = module.elastic_load_balancer_master.target_group_arn
+  instance_id   = module.ec2-master-subnet1.instance_id
+  port             = 6443
+}
+
+module "attach-master-subnet2-to-elb" {
+  source           = "./target_group_attachment"
+  target_group_arn = module.elastic_load_balancer_master.target_group_arn
+  instance_id   = module.ec2-master-subnet2.instance_id
+  port             = 6443
+}
+
+
+module "attach-master-subnet3-to-elb" {
+  source           = "./target_group_attachment"
+  target_group_arn = module.elastic_load_balancer_master.target_group_arn
+  instance_id   = module.ec2-master-subnet3.instance_id
+  port             = 6443
+}
 
 module "attach-worker-subnet1-to-elb" {
   source           = "./target_group_attachment"
-  target_group_arn = module.elastic_load_balancer.target_group_arn
-  worker_node_id   = module.ec2-worker-subnet1.instance_id
+  target_group_arn = module.elastic_load_balancer_worker.target_group_arn
+  instance_id   = module.ec2-worker-subnet1.instance_id
+  port             = 80
 }
 
 module "attach-worker-subnet2-to-elb" {
   source           = "./target_group_attachment"
-  target_group_arn = module.elastic_load_balancer.target_group_arn
-  worker_node_id   = module.ec2-worker-subnet2.instance_id
+  target_group_arn = module.elastic_load_balancer_worker.target_group_arn
+  instance_id   = module.ec2-worker-subnet2.instance_id
+  port             = 80
 }
 
 
 module "attach-worker-subnet3-to-elb" {
   source           = "./target_group_attachment"
-  target_group_arn = module.elastic_load_balancer.target_group_arn
-  worker_node_id   = module.ec2-worker-subnet3.instance_id
+  target_group_arn = module.elastic_load_balancer_worker.target_group_arn
+  instance_id   = module.ec2-worker-subnet3.instance_id
+  port             = 80
 }
 
 module "attach-master-subnet1-to-ebs" {

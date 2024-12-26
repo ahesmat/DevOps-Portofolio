@@ -1,7 +1,7 @@
-# Security Group for ELB
-resource "aws_security_group" "elb_sg" {
-  name        = "HA-K8s-ELB-SG"
-  description = "Allow traffic to the ELB"
+# Security Group for ELB Connected to worker nodes
+resource "aws_security_group" "elb_sg_worker" {
+  name        = "HA-K8s-ELB-WORKER-SG"
+  description = "Allow traffic to the Worker ELB"
   vpc_id      = var.vpc
 
   ingress {
@@ -29,7 +29,34 @@ resource "aws_security_group" "elb_sg" {
   }
 
   tags = {
-    Name = "HA-K8s-ELB-SG"
+    Name = "HA-K8s-ELB-WORKER-SG"
+  }
+}
+
+# Security Group for ELB Connected to master nodes
+resource "aws_security_group" "elb_sg_master" {
+  name        = "HA-K8s-ELB-MASTER-SG"
+  description = "Allow traffic to the ELB"
+  vpc_id      = var.vpc
+
+  ingress {
+    description = "Allow traffic to API Gateway"
+    from_port   = 6443
+    to_port     = 6443
+    protocol    = "tcp"
+    cidr_blocks = ["10.0.0.0/16"]
+  }
+
+  egress {
+    description = "Allow all outbound traffic"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "HA-K8s-ELB-MASTER-SG"
   }
 }
 
@@ -54,6 +81,14 @@ resource "aws_security_group" "master_sg" {
     protocol    = "tcp"
     self        = true
   }
+
+   ingress {
+     description = "Allow communication from ELB on port 6443"
+     from_port   = 6443
+     to_port     = 6443
+     protocol    = "tcp"
+     security_groups = [aws_security_group.elb_sg_master.id]
+   }
 
   ingress {
     description = "Allow communication from worker nodes"
@@ -96,7 +131,7 @@ resource "aws_security_group" "worker_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    security_groups = [aws_security_group.elb_sg.id]
+    security_groups = [aws_security_group.elb_sg_worker.id]
   }
 
   ingress {
@@ -156,8 +191,12 @@ resource "aws_security_group" "jump_sg" {
 }
 
 # Outputs security_groups
-output "elb_sg_id" {
-  value = aws_security_group.elb_sg.id
+output "elb_sg_worker_id" {
+  value = aws_security_group.elb_sg_worker.id
+}
+
+output "elb_sg_master_id" {
+  value = aws_security_group.elb_sg_master.id
 }
 
 output "master_sg_id" {

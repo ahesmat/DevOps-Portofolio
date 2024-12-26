@@ -23,3 +23,30 @@ variable "vpc_id" {
  type        = string
 }
 
+
+variable "lb_name" {
+ description = "The ID of vpc"
+ type        = string
+}
+
+
+variable "tg_name" {
+ description = "The ID of vpc"
+ type        = string
+}
+
+variable "port" {
+ description = "port number"
+ type        = number
+}
+
+variable "protocol" {
+ description = "protocol"
+ type        = string
+}
+
+variable "path" {
+ description = "healthcheck path"
+ type        = string
+}
+
