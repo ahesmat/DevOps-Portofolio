@@ -78,7 +78,7 @@ module "elastic_load_balancer_master" {
   elb_sg          = module.security_groups.elb_sg_master_id
   lb_name         = "MastersLoadBalancer"
   tg_name         = "MastersTargetGroup"
-  protocol        = "HTTPS"
+  protocol        = "HTTP"
   port            = 6443
   path            = "/healthz"
 }
@@ -254,3 +254,16 @@ module "attach-worker-subnet3-to-ebs" {
  instance_id = module.ec2-worker-subnet3.instance_id
 }
 
+module "cert-generation" {
+source           = "./cert_generation"
+domain_name      = "mycluster.life"
+}
+
+module "route53-record" {
+source           = "./route53_record"
+domain_name      = module.cert-generation.domain_name
+lb_dns_name      = module.elastic_load_balancer_master.lb_dns_name
+lb_zone_id       = module.elastic_load_balancer_master.lb_zone_id
+record_names     = module.cert-generation.record_name
+record_values    = module.cert-generation.record_value
+}

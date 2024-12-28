@@ -55,3 +55,12 @@ output "target_group_arn" {
     value = aws_lb_target_group.ha_cluster_target_group.arn
   }
 
+
+output "lb_dns_name" {
+  value = aws_lb.ha_cluster_alb.dns_name
+}
+
+output "lb_zone_id" {
+  value = aws_lb.ha_cluster_alb.zone_id
+}
+
