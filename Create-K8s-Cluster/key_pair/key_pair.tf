@@ -10,6 +10,10 @@ resource "aws_key_pair" "generated_key_pair" {
 resource "local_file" "private_key" {
   content  = tls_private_key.cluster_private_key.private_key_pem
   filename = var.file_name
+
+  lifecycle {
+    ignore_changes = [content] # Prevent overwriting if file already exists
+  }
 }
 
 output "key_name" {
