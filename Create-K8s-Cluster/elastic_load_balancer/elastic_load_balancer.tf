@@ -64,3 +64,6 @@ output "lb_zone_id" {
   value = aws_lb.ha_cluster_alb.zone_id
 }
 
+output "lb_arn" {
+  value = aws_lb.ha_cluster_alb.arn
+}

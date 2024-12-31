@@ -261,3 +261,10 @@ lb_dns_name      = module.elastic_load_balancer_master.lb_dns_name
 lb_zone_id       = module.elastic_load_balancer_master.lb_zone_id
 }
 
+module "change-alb-to-https" {
+source          = "./change_alb_to_https"
+lb_arn          = module.elastic_load_balancer_master.lb_arn
+port            = 443
+cert_arn        = module.cert-generation-and-validation.certificate_arn
+tg_arn          = module.elastic_load_balancer_master.target_group_arn
+}

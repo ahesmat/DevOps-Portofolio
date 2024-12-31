@@ -42,6 +42,31 @@ resource "aws_acm_certificate_validation" "my_cert_validation" {
   validation_record_fqdns = [for dvo in aws_acm_certificate.my_cert.domain_validation_options : dvo.resource_record_name]
 }
 
+resource "null_resource" "wait_for_cert_validation" {
+  provisioner "local-exec" {
+    command = <<EOT
+      CERT_ARN="${aws_acm_certificate.my_cert.arn}"
+      STATUS=""
+
+      while true; do
+        STATUS=$(aws acm describe-certificate --certificate-arn "$CERT_ARN" --query "Certificate.Status" --output text)
+        echo "Current status: $STATUS"
+        if [ "$STATUS" = "ISSUED" ]; then
+          echo "Certificate validated and issued."
+          break
+        fi
+        echo "Waiting for certificate to be validated..."
+        sleep 30  # Wait 30 seconds before re-checking
+      done
+    EOT
+  }
+
+  depends_on = [aws_acm_certificate.my_cert]  # Ensure this runs after certificate creation
+}
+
+
+
+
 output "certificate_arn" {
   value                   = aws_acm_certificate.my_cert.arn
 }
