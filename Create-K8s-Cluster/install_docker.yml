@@ -37,6 +37,6 @@
         state: started
         enabled: yes
 
-    - name: Add user ubutu to Docker groupi
+    - name: Add user ubutu to Docker group
       shell: |     
         usermod -aG docker ubuntu

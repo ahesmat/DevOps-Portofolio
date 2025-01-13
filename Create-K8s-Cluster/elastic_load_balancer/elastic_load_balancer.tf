@@ -4,7 +4,7 @@ resource "aws_lb" "ha_cluster_alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [var.elb_sg] # Reference the existing security group
-  subnets            = [var.public_subnet_1, var.public_subnet_2,var.public_subnet_3]
+  subnets            = [var.subnet_1, var.subnet_2,var.subnet_3]
 
   enable_deletion_protection = false
 
@@ -39,17 +39,6 @@ resource "aws_lb_target_group" "ha_cluster_target_group" {
   }
 }
 
-# ALB Listener
-resource "aws_lb_listener" "ha_cluster_listener" {
-  load_balancer_arn = aws_lb.ha_cluster_alb.arn
-  port              = var.port
-  protocol          = var.protocol
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.ha_cluster_target_group.arn
-  }
-}
 
 output "target_group_arn" {
     value = aws_lb_target_group.ha_cluster_target_group.arn

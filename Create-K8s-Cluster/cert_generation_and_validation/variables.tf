@@ -3,12 +3,7 @@ variable "domain_name" {
   type        = string
 }
 
-variable "lb_dns_name" {
- description = "lb_dns_name"
- type = string
-}
-
-variable "lb_zone_id" {
- description = "lb_zone_id"
+variable "zone_id" {
+ description = "DNS zone_id"
  type = string
 }

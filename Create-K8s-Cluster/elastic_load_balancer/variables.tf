@@ -1,15 +1,15 @@
-variable "public_subnet_1" {
- description = "The ID of Public Subnet 1"
+variable "subnet_1" {
+ description = "The ID of  Subnet 1"
  type        = string
 }
 
-variable "public_subnet_2" {
- description = "The ID of Public Subnet 2"
+variable "subnet_2" {
+ description = "The ID of  Subnet 2"
  type        = string
 }
 
-variable "public_subnet_3" {
- description = "The ID of Public Subnet 3"
+variable "subnet_3" {
+ description = "The ID of Subnet 3"
  type        = string
 }
 

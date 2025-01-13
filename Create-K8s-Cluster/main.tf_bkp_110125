@@ -56,9 +56,9 @@ module "elastic_load_balancer_worker" {
 
   source          = "./elastic_load_balancer"
   vpc_id          = module.vpc.vpc_id
-  subnet_1 = module.subnets.public_subnet_1_id
-  subnet_2 = module.subnets.public_subnet_2_id
-  subnet_3 = module.subnets.public_subnet_3_id
+  public_subnet_1 = module.subnets.public_subnet_1_id
+  public_subnet_2 = module.subnets.public_subnet_2_id
+  public_subnet_3 = module.subnets.public_subnet_3_id
   elb_sg          = module.security_groups.elb_sg_worker_id
   lb_name         = "WorkersLoadBalancer"
   tg_name         = "workersTargetGroup"
@@ -72,9 +72,9 @@ module "elastic_load_balancer_master" {
 
   source          = "./elastic_load_balancer"
   vpc_id          = module.vpc.vpc_id
-  subnet_1 = module.subnets.private_subnet_1_id
-  subnet_2 = module.subnets.private_subnet_2_id
-  subnet_3 = module.subnets.private_subnet_3_id
+  public_subnet_1 = module.subnets.public_subnet_1_id
+  public_subnet_2 = module.subnets.public_subnet_2_id
+  public_subnet_3 = module.subnets.public_subnet_3_id
   elb_sg          = module.security_groups.elb_sg_master_id
   lb_name         = "MastersLoadBalancer"
   tg_name         = "MastersTargetGroup"
@@ -254,45 +254,17 @@ module "attach-worker-subnet3-to-ebs" {
  instance_id = module.ec2-worker-subnet3.instance_id
 }
 
-module "dns-zone" {
- source          = "./dns_zone"
- domain_name     = "mycluster.life"
-}
-
-module "dns-record-worker-lb" {
- source         = "./dns_records"
- zone_id        = module.dns-zone.zone_id
- name           = "public.${module.dns-zone.domain_name}"
- lb_dns_name    = module.elastic_load_balancer_worker.lb_dns_name
- lb_zone_id     = module.elastic_load_balancer_worker.lb_zone_id
-}
-
-module "dns-record-master-lb" {
- source         = "./dns_records"
- zone_id        = module.dns-zone.zone_id
- name           = "private.${module.dns-zone.domain_name}"
- lb_dns_name    = module.elastic_load_balancer_master.lb_dns_name
- lb_zone_id     = module.elastic_load_balancer_master.lb_zone_id
-}
-
 module "cert-generation-and-validation" {
- source         = "./cert_generation_and_validation"
- domain_name    = module.dns-zone.domain_name
- zone_id        = module.dns-zone.zone_id
+source           = "./cert_generation_and_validation"
+domain_name      = "mycluster.life"
+lb_dns_name      = module.elastic_load_balancer_master.lb_dns_name
+lb_zone_id       = module.elastic_load_balancer_master.lb_zone_id
 }
 
-module "worker-alb-listener" {
-source          = "./alb_listener"
-lb_arn          = module.elastic_load_balancer_worker.lb_arn
-port            = 443
-cert_arn        = module.cert-generation-and-validation.certificate_arn
-tg_arn          = module.elastic_load_balancer_worker.target_group_arn
-}
-
-module "master-alb-listener" {
-source          = "./alb_listener"
+module "change-alb-to-https" {
+source          = "./change_alb_to_https"
 lb_arn          = module.elastic_load_balancer_master.lb_arn
-port            = 6443
+port            = 443
 cert_arn        = module.cert-generation-and-validation.certificate_arn
 tg_arn          = module.elastic_load_balancer_master.target_group_arn
 }
