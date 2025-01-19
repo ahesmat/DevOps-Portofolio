@@ -40,3 +40,4 @@
     - name: Add user ubutu to Docker group
       shell: |     
         usermod -aG docker ubuntu
+

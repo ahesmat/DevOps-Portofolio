@@ -99,7 +99,7 @@ module "ec2-master-subnet1" {
 
   source        = "./ec2"
   ami_id        = "ami-0866a3c8686eaeeba"
-  instance_type = "t2.micro"
+  instance_type = "t3.medium"
   instance_name = "master-subnet1"
   key_pair_name = module.key_pair.key_name
   sg_name       = module.security_groups.master_sg_id
@@ -111,7 +111,7 @@ module "ec2-worker-subnet1" {
 
   source        = "./ec2"
   ami_id        = "ami-0866a3c8686eaeeba"
-  instance_type = "t2.micro"
+  instance_type = "t3.medium"
   instance_name = "worker-subnet1"
   key_pair_name = module.key_pair.key_name
   sg_name       = module.security_groups.worker_sg_id
@@ -123,7 +123,7 @@ module "ec2-master-subnet2" {
 
   source        = "./ec2"
   ami_id        = "ami-0866a3c8686eaeeba"
-  instance_type = "t2.micro"
+  instance_type = "t3.medium"
   instance_name = "master-subnet2"
   key_pair_name = module.key_pair.key_name
   sg_name       = module.security_groups.master_sg_id
@@ -135,7 +135,7 @@ module "ec2-worker-subnet2" {
 
   source        = "./ec2"
   ami_id        = "ami-0866a3c8686eaeeba"
-  instance_type = "t2.micro"
+  instance_type = "t3.medium"
   instance_name = "worker-subnet2"
   key_pair_name = module.key_pair.key_name
   sg_name       = module.security_groups.worker_sg_id
@@ -147,7 +147,7 @@ module "ec2-master-subnet3" {
 
   source        = "./ec2"
   ami_id        = "ami-0866a3c8686eaeeba"
-  instance_type = "t2.micro"
+  instance_type = "t3.medium"
   instance_name = "master-subnet3"
   key_pair_name = module.key_pair.key_name
   sg_name       = module.security_groups.master_sg_id
@@ -160,7 +160,7 @@ module "ec2-worker-subnet3" {
 
   source        = "./ec2"
   ami_id        = "ami-0866a3c8686eaeeba"
-  instance_type = "t2.micro"
+  instance_type = "t3.medium"
   instance_name = "worker-subnet3"
   key_pair_name = module.key_pair.key_name
   sg_name       = module.security_groups.worker_sg_id

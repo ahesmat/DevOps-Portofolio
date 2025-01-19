@@ -3,7 +3,7 @@
   become: yes
   tasks:
   - name: Ensure the volume is formatted
-    ansible.builtin.command: "mkfs -t xfs /dev/xvdf"
+    ansible.builtin.command: "mkfs -t xfs /dev/nvme1n1"
     register: format_result
     changed_when: "'already formatted' not in format_result.stderr"
     failed_when: "'error' in format_result.stderr"
@@ -19,7 +19,7 @@
   - name: Ensure the volume is mounted
     ansible.builtin.mount:
       path: /data
-      src: /dev/xvdf
+      src: /dev/nvme1n1
       fstype: xfs
       state: mounted
 
@@ -29,7 +29,7 @@
       creates: /etc/fstab_bkp
 
   - name: Get the UUID of the volume
-    ansible.builtin.command: "blkid -s UUID -o value /dev/xvdf"
+    ansible.builtin.command: "blkid -s UUID -o value /dev/nvme1n1"
     register: volume_uuid
     changed_when: false
 
