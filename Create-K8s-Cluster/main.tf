@@ -78,7 +78,7 @@ module "elastic_load_balancer_master" {
   elb_sg          = module.security_groups.elb_sg_master_id
   lb_name         = "MastersLoadBalancer"
   tg_name         = "MastersTargetGroup"
-  protocol        = "HTTP"
+  protocol        = "HTTPS"
   port            = 6443
   path            = "/healthz"
 }
