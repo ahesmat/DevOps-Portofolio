@@ -21,7 +21,7 @@ resource "aws_lb_target_group" "ha_cluster_target_group" {
   vpc_id   = var.vpc_id
 
    dynamic "health_check" {
-     for_each = var.protocol == "HTTP" ? [1] : []
+     for_each = var.protocol == "HTTPS" ? [1] : []
   content {
 
     path                = var.path

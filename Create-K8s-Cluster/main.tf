@@ -62,8 +62,8 @@ module "elastic_load_balancer_worker" {
   elb_sg          = module.security_groups.elb_sg_worker_id
   lb_name         = "WorkersLoadBalancer"
   tg_name         = "workersTargetGroup"
-  protocol        = "HTTP"
-  port            = 80
+  protocol        = "HTTPS"
+  port            = 443
   path            = "/"
 }
 
