@@ -72,9 +72,9 @@ module "elastic_load_balancer_master" {
 
   source          = "./elastic_load_balancer"
   vpc_id          = module.vpc.vpc_id
-  subnet_1 = module.subnets.private_subnet_1_id
-  subnet_2 = module.subnets.private_subnet_2_id
-  subnet_3 = module.subnets.private_subnet_3_id
+  subnet_1 = module.subnets.public_subnet_1_id
+  subnet_2 = module.subnets.public_subnet_2_id
+  subnet_3 = module.subnets.public_subnet_3_id
   elb_sg          = module.security_groups.elb_sg_master_id
   lb_name         = "MastersLoadBalancer"
   tg_name         = "MastersTargetGroup"
