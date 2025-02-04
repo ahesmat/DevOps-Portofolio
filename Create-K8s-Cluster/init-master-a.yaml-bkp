@@ -1,0 +1,57 @@
+- name: Initialize Kubernetes on master1-a
+  hosts: master1-b
+  become: true
+  tasks:
+    - name: Reset the cluster
+      shell: |
+        rm -rf /tmp/calico* && \
+        sudo kubeadm reset --force
+
+    - name: Download Calico YAML
+      shell: wget -P /tmp https://docs.projectcalico.org/manifests/calico.yaml
+
+    - name: Get Internal IP Address
+      shell: "ip addr show | grep ens5 | awk '{print $2}' | awk -F '/' '{print $1}' | tail -1"
+      register: internal_ip
+      changed_when: false
+
+    - name: Initialize Kubernetes Control Plane
+      command: >
+        kubeadm init
+        --control-plane-endpoint {{ internal_ip.stdout }}:6443
+        --pod-network-cidr=10.244.0.0/16
+        --upload-certs
+      register: kubeadm_init_output
+
+    - name: Generate control plane join command
+      shell: kubeadm token create --print-join-command
+      register: control_plane_join_command
+
+    - name: Generate worker join command
+      shell: kubeadm token create --print-join-command
+      register: worker_join_command
+
+    - name: Save control plane join command to file
+      copy:
+        content: |
+          {{ control_plane_join_command.stdout }}
+        dest: /tmp/control-plane-join.sh
+        mode: 0755
+
+    - name: Save worker join command to file
+      copy:
+        content: |
+          {{ worker_join_command.stdout }}
+        dest: /tmp/worker-join.sh
+        mode: 0755
+
+    - name: Set up Kubernetes configuration and enable bash completion
+      shell: |
+        mkdir -p $HOME/.kube && \
+        sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config && \
+        sudo chown $(id -u):$(id -g) $HOME/.kube/config && \
+        kubectl apply -f /tmp/calico.yaml && \
+        sudo apt-get install bash-completion -y && \
+        bash -c 'source <(kubectl completion bash)' && \
+        echo "source <(kubectl completion bash)" >> $HOME/.bashrc
+

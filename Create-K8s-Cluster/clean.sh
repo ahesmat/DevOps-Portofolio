@@ -1,5 +1,5 @@
 terraform destroy --auto-approve
-rm *pem*
+rm -rf *pem*
 rm *tfstate*
 rm *.ini
 rm -r .terraform

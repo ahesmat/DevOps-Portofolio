@@ -1,0 +1,65 @@
+- name: Initialize Kubernetes on master1-a
+  hosts: master1
+  become: true
+  tasks:
+    - name: Reset the cluster
+      shell: |
+        rm -rf /home/ubuntu/init-output &&\      
+        mkdir -p /home/ubuntu/init-output      
+        rm -rf /home/ubuntu/.kube && \    
+        rm -rf /tmp/calico* && \
+        sudo kubeadm reset --force
+
+    - name: Download Calico YAML
+      shell: wget -P /tmp https://docs.projectcalico.org/manifests/calico.yaml
+
+    - name: Get Internal IP Address
+      shell: "ip addr show | grep ens5 | awk '{print $2}' | awk -F '/' '{print $1}' | tail -1"
+      register: internal_ip
+      changed_when: false
+
+    - name: Initialize Kubernetes Control Plane
+      command: >
+        kubeadm init
+        --control-plane-endpoint {{ internal_ip.stdout }}:6443
+        --pod-network-cidr=10.244.0.0/16
+        --upload-certs 
+      register: kubeadm_init_output
+
+    - name: Write kubeadm init output to a file
+      copy:
+        content: "{{ kubeadm_init_output.stdout }}"
+        dest: /home/ubuntu/init-output/kube_init_output
+        mode: '0644'  # Optional: Set appropriate file permissions
+
+
+    - name: Set up Kubernetes configuration 
+      shell: |
+        mkdir /home/ubuntu/.kube && \
+        sudo cp -i /etc/kubernetes/admin.conf /home/ubuntu/.kube/config && \   
+        sudo chown ubuntu:ubuntu /home/ubuntu/.kube/config && \
+        kubectl apply -f /tmp/calico.yaml &&\
+        sudo apt-get install bash-completion -y && \
+        bash -c 'source <(kubectl completion bash)' && \
+        echo "source <(kubectl completion bash)" >> $HOME/.bashrc       
+
+    
+    - name: Generate Join Scripts
+      shell: |
+        cd  /home/ubuntu/init-output && \
+        grep 'kubeadm join'  kube_init_output -A3 | head -2 > join_worker.sh && \
+        grep 'kubeadm join'  kube_init_output -A3 | head -3 > join_master.sh && \
+        chmod 777 join_worker.sh && \
+        chmod 777 join_master.sh 
+
+    - name: Fetching Join Worker Script
+      ansible.builtin.fetch:
+        src: "/home/ubuntu/init-output/join_worker.sh"  
+        dest: /home/cloud_user/DevOps-Portofolio/Create-K8s-Cluster/
+        flat: yes
+
+    - name: Fetching Join Master Script
+      ansible.builtin.fetch:
+        src: "/home/ubuntu/init-output/join_master.sh"
+        dest: /home/cloud_user/DevOps-Portofolio/Create-K8s-Cluster/
+        flat: yes        

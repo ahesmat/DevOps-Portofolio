@@ -16,20 +16,15 @@
         name:
           - apt-transport-https
           - curl
-          - containerd  
         state: present
 
-    # Configure Containerd
-    - name: Configure Containerd
+    # K8s Pre-Installation-Config
+    - name: Pre-Installation-config
       shell: |
-        sudo mkdir -p /etc/containerd
-        containerd config default | sudo tee /etc/containerd/config.toml > /dev/null
-        sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
-        sudo systemctl restart containerd
         rm -r /etc/apt/keyrings/kubernetes-apt-keyring.gpg
         curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
-    # Add K8s's official repository to apt sources
+    # Add K8s official repository to apt sources
     - name: Add K8s apt repository
       apt_repository:
         repo: 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /'
@@ -63,3 +58,4 @@
         net.bridge.bridge-nf-call-ip6tables = 1
         net.ipv4.ip_forward                 = 1
         EOF
+

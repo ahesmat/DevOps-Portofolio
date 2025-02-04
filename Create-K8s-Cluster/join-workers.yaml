@@ -1,0 +1,26 @@
+- name: Join master nodes to the cluster
+  hosts: workers
+  become: true
+  tasks:
+
+    - name: Reset the cluster
+      shell: |
+        rm -rf /home/ubuntu/.kube && \
+        sudo kubeadm reset --force          
+
+    - name: Clean Join Directory
+      shell: rm -rf /home/ubuntu/join
+
+    - name: Create Directory   
+      shell: mkdir /home/ubuntu/join
+
+    - name: Copy Join Script
+      copy:
+        src: "/home/cloud_user/DevOps-Portofolio/Create-K8s-Cluster/join_worker.sh"
+        dest: "/home/ubuntu/join" 
+
+    - name: Joininig the node to the cluster
+      shell: |
+        cd /home/ubuntu/join &&\
+        chmod 777 join_worker.sh &&\
+        ./join_worker.sh      

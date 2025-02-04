@@ -20,8 +20,10 @@
       echo "ansible_ssh_private_key_file=$PEM_FILE" >> $INVENTORY_FILE
       echo "" >> $INVENTORY_FILE
 
+      echo "[master1]" >> $INVENTORY_FILE
+      echo "master1-a ansible_host=$MASTER1_A_PRIVATE_IP" >> $INVENTORY_FILE      
+
       echo "[masters]" >> $INVENTORY_FILE
-      echo "master1-a ansible_host=$MASTER1_A_PRIVATE_IP" >> $INVENTORY_FILE
       echo "master1-b ansible_host=$MASTER1_B_PRIVATE_IP" >> $INVENTORY_FILE
       echo "master1-c ansible_host=$MASTER1_C_PRIVATE_IP" >> $INVENTORY_FILE
       echo "" >> $INVENTORY_FILE
