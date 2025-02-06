@@ -33,15 +33,16 @@
         mode: '0644'  # Optional: Set appropriate file permissions
 
 
-    - name: Set up Kubernetes configuration 
+    - name: Set up Kubernetes configuration
+      become_user: ubuntu 
       shell: |
         mkdir /home/ubuntu/.kube && \
         sudo cp -i /etc/kubernetes/admin.conf /home/ubuntu/.kube/config && \   
         sudo chown ubuntu:ubuntu /home/ubuntu/.kube/config && \
-        kubectl apply -f /tmp/calico.yaml &&\
         sudo apt-get install bash-completion -y && \
         bash -c 'source <(kubectl completion bash)' && \
-        echo "source <(kubectl completion bash)" >> $HOME/.bashrc       
+        kubectl apply -f /tmp/calico.yaml &&\
+        echo "source <(kubectl completion bash)" >> $HOME/.bashrc 
 
     
     - name: Generate Join Scripts

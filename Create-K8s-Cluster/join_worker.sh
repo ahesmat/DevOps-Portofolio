@@ -1,2 +1,2 @@
-  kubeadm join 10.0.61.13:6443 --token lnexcc.k1mrenqvwcn28llu \
-	--discovery-token-ca-cert-hash sha256:e977419b54f93e15870473a23441e80b60686cd55b429be2a6e1a2b28b4c003f \
+  kubeadm join 10.0.58.17:6443 --token epxc0t.xz8lzev2fdqgqoa7 \
+	--discovery-token-ca-cert-hash sha256:8692b84584d14307ada922b780908329e0e2fad7e31576328200920ad47093bc \
