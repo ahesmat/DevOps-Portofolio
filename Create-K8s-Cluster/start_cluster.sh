@@ -10,4 +10,5 @@ ansible-playbook -i ansible_inventory.ini change-hostname.yaml
 ansible-playbook -i ansible_inventory.ini init-master-a.yaml
 ansible-playbook -i ansible_inventory.ini join-masters.yaml
 ansible-playbook -i ansible_inventory.ini join-workers.yaml
+ansible-playbook -i ansible_inventory.ini deploy-nginx.yaml
 

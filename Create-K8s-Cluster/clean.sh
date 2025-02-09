@@ -1,6 +1,5 @@
-terraform destroy --auto-approve
 rm -rf *pem*
-rm *tfstate*
-rm *.ini
-rm -r .terraform
 rm -r join*sh
+rm *.ini
+terraform destroy --auto-approve            
+rm *tfstate*
