@@ -1,0 +1,19 @@
+variable "domains" {
+  description = "List of domains for which certificates will be created"
+  type        = list(string)
+}
+
+variable "lb_dns_name" {
+ description = "lb_dns_name"
+ type = map(string)
+}
+
+variable "lb_zone_id" {
+ description = "lb_zone_id"
+ type = map(string)
+}
+
+variable "zone_name" {
+ description = "zone_name"
+ type = string
+}

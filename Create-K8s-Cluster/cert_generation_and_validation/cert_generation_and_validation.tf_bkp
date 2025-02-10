@@ -1,0 +1,68 @@
+resource "aws_acm_certificate" "my_cert" {
+  for_each         = toset(var.domains)
+  domain_name      = each.key
+  validation_method = "DNS"
+
+  subject_alternative_names = [
+    "www.${each.key}"
+  ]
+}
+
+
+
+resource "aws_route53_zone" "mycluster" {
+  name = var.zone_name
+}
+
+resource "aws_route53_record" "mycluster" {
+  for_each = toset(var.domains)
+
+  zone_id = aws_route53_zone.mycluster.id
+  name    = each.key
+  type    = "A"
+
+  alias {
+    name                   = var.lb_dns_name[each.key]
+    zone_id                = var.lb_zone_id[each.key]
+    evaluate_target_health = true
+  }
+}
+
+
+resource "aws_route53_record" "cert_validation" {
+  for_each = {
+    for cert in aws_acm_certificate.my_cert : cert.domain_name => {
+      validation_records = cert.domain_validation_options
+    }
+  }
+
+  zone_id = aws_route53_zone.mycluster.id
+
+  # Iterate over each validation record
+  dynamic "record" {
+    for_each = each.value.validation_records
+    content {
+      name    = record.value.resource_record_name
+      type    = record.value.resource_record_type
+      ttl     = 300
+      records = [record.value.resource_record_value]
+    }
+  }
+}
+
+
+resource "aws_acm_certificate_validation" "my_cert_validation" {
+  for_each = aws_acm_certificate.my_cert
+
+  certificate_arn       = each.value.arn
+  validation_record_fqdns = [
+    for dvo in each.value.domain_validation_options : dvo.resource_record_name
+  ]
+}
+
+output "certificate_arns" {
+  description = "The ARNs of the generated certificates"
+  value       = { for cert in aws_acm_certificate.my_cert : cert.domain_name => cert.arn }
+}
+
+

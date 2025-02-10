@@ -5,10 +5,14 @@ Create-EC2-Instance-With-Jenkins/terraform.tfstate.backup
 Create-EC2-Instance-With-Jenkins/.terraform.lock.hcl
 Create-EC2-Instance-With-Jenkins/login-to-created-instance.sh
 Create-EC2-Instance-With-Jenkins/jenkins-key.pem
-Create-K8s-Cluster/.terraform
 Create-K8s-Cluster/jenkins-key.pem
+Create-K8s-Cluster/.terraform
 Create-K8s-Cluster/terraform.tfstate
 Create-K8s-Cluster/terraform.tfstate.backup
 Create-K8s-Cluster/.terraform.lock.hcl
 Create-K8s-Cluster/login-to-created-instance.sh
-Create-K8s-Cluster/jenkins-key.pem
+**/.terraform
+**/*.pem
+**/terraform.tfstate
+**/terraform.tfstate.backup
+**/.terraform.lock
