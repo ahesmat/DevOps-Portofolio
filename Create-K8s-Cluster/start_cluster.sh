@@ -13,3 +13,5 @@ ansible-playbook -i ../ansible_inventory.ini join-masters.yaml
 ansible-playbook -i ../ansible_inventory.ini join-workers.yaml
 ansible-playbook -i ../ansible_inventory.ini deploy-nginx.yaml
 
+
+

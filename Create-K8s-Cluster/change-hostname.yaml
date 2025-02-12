@@ -1,6 +1,0 @@
-- name: Change Host Name
-  hosts: all
-  become: true
-  tasks:
-    - name: Change Hotsname
-      shell: hostnamectl hostname {{inventory_hostname}}
