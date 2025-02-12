@@ -1,0 +1,14 @@
+- name: Join master nodes to the cluster
+  hosts: master1
+  tasks:
+
+    - name: Copy nginx.yaml to master node
+      copy:
+        src: "/home/cloud_user/DevOps-Portofolio/Create-K8s-Cluster/nginx.yaml"
+        dest: "/home/ubuntu/" 
+
+    - name: Deploying App
+      shell: |
+        cd /home/ubuntu
+        kubectl apply -f nginx.yaml      
+
