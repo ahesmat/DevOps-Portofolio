@@ -1,0 +1,21 @@
+- name: Initialize Kubernetes on master1-a
+  hosts: master1-a
+  become: true
+  tasks:
+    - name: Clear any old Calico Files from /tmp
+      shell: rm -rf /tmp/calico*
+
+    - name: Download Calico YAML
+      shell: wget -P /tmp https://docs.projectcalico.org/manifests/calico.yaml
+
+    - name: Get Internal IP Address
+      shell: "ip addr show | grep ens5 | awk '{print $2}' | awk -F '/' '{print $1}' | tail -1"
+      register: internal_ip
+      changed_when: false
+
+    - name: Initialize Kubernetes Control Plane
+      command: >
+        kubeadm init
+        --control-plane-endpoint {{ internal_ip.stdout }}:6443
+        --pod-network-cidr=10.244.0.0/16
+        --upload-certs

@@ -3,13 +3,15 @@
 ## Overview
 This project demonstrates how to create a **production-grade Kubernetes (K8s) cluster** on AWS, leveraging **Terraform** for infrastructure provisioning and **Ansible** for Kubernetes setup and deployment. The cluster consists of:
 - **3 Master Nodes**: For high availability and fault tolerance.
-- **8 Worker Nodes**: To host applications and workloads.
+- **3 Worker Nodes**: To host applications and workloads. ( Can be scaled when needed)
 
 The project also incorporates AWS services to enhance the production environment, such as:
 - **Load Balancing**
-- **Auto Scaling**
 - **DNS Management (Route 53)**
 - **Security Groups**
+- **Certificate Management**
+- **EBS Volumes**
+
 
 ---
 

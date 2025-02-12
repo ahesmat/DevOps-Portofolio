@@ -1,0 +1,35 @@
+- name: Join master nodes to the cluster
+  hosts: masters
+  become: true
+  tasks:
+
+    - name: Reset the cluster
+      shell: |
+        rm -rf /home/ubuntu/.kube && \
+        sudo kubeadm reset --force          
+
+    - name: Clean Join Directory
+      shell: rm -rf /home/ubuntu/join
+
+    - name: Create Directory   
+      shell: mkdir /home/ubuntu/join
+
+    - name: Copy Join Script
+      copy:
+        src: "/home/cloud_user/DevOps-Portofolio/Create-K8s-Cluster/join_master.sh"
+        dest: "/home/ubuntu/join" 
+
+    - name: Joininig the node to the cluster
+      shell: |
+        cd /home/ubuntu/join &&\
+        chmod 777 join_master.sh &&\
+        ./join_master.sh      
+
+    - name: Set up Kubernetes configuration
+      shell: |
+        mkdir /home/ubuntu/.kube && \
+        sudo cp -i /etc/kubernetes/admin.conf /home/ubuntu/.kube/config && \
+        sudo chown ubuntu:ubuntu /home/ubuntu/.kube/config && \
+        sudo apt-get install bash-completion -y && \
+        bash -c 'source <(kubectl completion bash)' && \
+        echo "source <(kubectl completion bash)" >> $HOME/.bashrc        

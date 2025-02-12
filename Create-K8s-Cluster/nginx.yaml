@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+spec:
+  selector:
+    matchLabels:
+      run: load-balancer-example
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        run: load-balancer-example
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+          ports:
+            - containerPort: 80
+              protocol: TCP
+
+---              
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  labels:
+    run : load-balancer-example
+spec:
+  type: NodePort
+  selector:
+    run: load-balancer-example
+  ports:
+    - port: 80         # Port for the service (accessible via ClusterIP)
+      targetPort: 80 # Port on which pods are listening
+      nodePort: 30001  # Predefined port exposed on all nodes
