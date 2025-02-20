@@ -9,7 +9,13 @@ variable "region-master" {
 }
 
 
+
 variable "region-worker" {
   type    = string
   default = "us-west-1"
+}
+
+variable "external_ip" {
+  type    = string
+  default = "0.0.0.0/0"
 }
