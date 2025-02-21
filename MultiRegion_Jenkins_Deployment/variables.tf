@@ -21,12 +21,12 @@ variable "external_ip" {
 }
 
 variable "workers-count" {
-  type = number
+  type    = number
   default = 1
 }
 
 variable "instance-type" {
-  type = string
+  type    = string
   default = "t3.micro"
 
 }
