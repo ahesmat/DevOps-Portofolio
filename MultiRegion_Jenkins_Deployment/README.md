@@ -106,7 +106,19 @@ Follow the steps below to set up the multi-region Jenkins deployment.
 ## Setup
 
 1. Clone this repository.
-2. Configure your AWS CLI with proper credentials: `aws configure`.
-3. Initialize the Terraform working directory:
-   ```bash
+
+2. Run the bootstrap script to install Terraform, Ansible, AWS CLI, and boto3 Python SDK:
+./bootstrap.sh
+
+3.Configure your AWS CLI by passing your AWS credentials (Access Key ID and Secret Access Key) as arguments to the configure-aws.sh script:
+
+./configure-aws.sh <AWS_ACCESS_KEY_ID> <AWS_SECRET_ACCESS_KEY>
+
+4.Create an S3 bucket for storing the Terraform state file:
+
+./createS3Bucket.sh
+
+
+5. Initialize the Terraform working directory to set up the backend and download the necessary plugins:
+
    terraform init
