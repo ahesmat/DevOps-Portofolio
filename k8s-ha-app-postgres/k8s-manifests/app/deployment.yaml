@@ -15,10 +15,17 @@ spec:
     spec:
       containers:
       - name: demo-app
-        image: nginx:stable # Replace with your actual app image
+        image: ahesmat/incident-api:v1 # Replace with your actual app image
         ports:
         - containerPort: 80
           name: http
+        resources:  
+          requests:
+            memory: "128Mi"  
+            cpu: "100m"
+          limits: 
+            memory: "256Mi"
+            cpu: "500m"         
         env:
         - name: DB_HOST # Injecting as an env var
           valueFrom:
@@ -44,4 +51,20 @@ spec:
           valueFrom:
             secretKeyRef:
               name: postgres-secret
-              key: POSTGRES_PASSWORD          
+              key: POSTGRES_PASSWORD         
+        livenessProbe: 
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 10      #Time probe waits before start checking
+          periodSeconds: 10        #Frequency of running the probe
+          timeoutSeconds: 2          #number of seconds probe waits for a response
+          failureThreshold: 3         # number of failures until probe starts the container
+        readinessProbe:
+          httpGet:      
+            path: /health
+            port: http
+          initialDelaySeconds: 5      #Number of seconds probe waits before start checking
+          periodSeconds: 5          # Frequency of probe checking for readiness
+          timeoutSeconds: 2         # number of seconds probe waits for a response
+          failureThreshold: 3        # number of consecutive successes to mark as ready
