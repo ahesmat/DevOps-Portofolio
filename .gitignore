@@ -10,3 +10,4 @@
 # Ignore temporary login script
 **/login-to-created-instance.sh
 
+master-k8s-content/app/node_modules/
