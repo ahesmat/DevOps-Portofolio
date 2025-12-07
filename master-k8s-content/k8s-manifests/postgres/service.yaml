@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: demo-ha-app
+  labels:
+    app: postgres
+spec:
+  clusterIP: None  # This is the key to making it headless
+  selector:
+    app: postgres
+  ports:
+    - port: 5432
+      targetPort: 5432

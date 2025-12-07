@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-pv-1 # Name for the PV
+
+spec:
+  capacity:
+    storage: 1Gi # Storage size
+
+  accessModes:
+    - ReadWriteOnce # Can be mounted read-write by a single node
+
+  persistentVolumeReclaimPolicy: Retain # Keeps data after PVC deletion
+
+  storageClassName: manual # Matches the PVC's storage class
+
+  hostPath:
+    path: "/mnt/postgres-data" # Path on the node where data lives
