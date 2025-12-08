@@ -16,20 +16,12 @@ Containerized API built with Node.js + Express
 The goal of the project is to show how to deploy a real API and database on Kubernetes using robust, scalable patterns that reflect what is done in production environments.
 
 🏗️ Architecture Overview
-                          +---------------------+
-                          |   Incident API      |
-                          |  (demo-app)         |
-                          |  Deployment (2 pods)|
-                          +----------+----------+
-                                     |
-                               ClusterIP Service
-                                     |
-                                     v
- +--------------------+     +----------------------------+
- |  StatefulSet       |     | PostgreSQL (postgres-0)    |
- |  1 replica         |<--->| PersistentVolumeClaim (PVC)|
- |  Headless Service  |     | PersistentVolume (PV)      |
- +--------------------+     +----------------------------+
+                      k8s-ha-app-postgres/images/IncidentTrackerDiagram.png
+
+                      
+![Repository Structure](https://raw.githubusercontent.com/ahesmat/DevOps-Portofolio/main/k8s-ha-app-postgres/IncidentTrackerDiagram.png)
+*Diagram: Full project folder layout, including app code, Helm chart, and Kubernetes manifests.*
+
 
 Components
 Component	Description
@@ -190,4 +182,5 @@ Secrets management
 Health checks & resources
 
 Helm chart packaging
+
 
