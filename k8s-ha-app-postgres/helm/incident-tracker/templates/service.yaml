@@ -1,15 +1,17 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "incident-tracker.fullname" . }}
+  name: {{ .Values.appDeployment.name }} # Name of the Service
+  namespace: demo-ha-app
   labels:
-    {{- include "incident-tracker.labels" . | nindent 4 }}
+    app: {{ .Values.appDeployment.name }}
 spec:
-  type: {{ .Values.service.type }}
-  ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
   selector:
-    {{- include "incident-tracker.selectorLabels" . | nindent 4 }}
+    app: {{ .Values.appDeployment.name }} # Routes traffic to pods with this label
+  ports:
+    - protocol: TCP
+      port: {{ .Values.appService.port }}       # Port the Service listens on
+      targetPort: {{ .Values.appService.port }} # Port your containers are listening on
+      name: {{ .Values.appDeployment.containers.port.name }}
+  type: {{.Values.appService.type }} # Exposes service externally via cloud provider load balancer
+

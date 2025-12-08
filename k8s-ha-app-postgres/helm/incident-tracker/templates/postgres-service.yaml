@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.postgresSTS.name }}
+  namespace: demo-ha-app
+  labels:
+    app: {{ .Values.postgresSTS.name }}
+spec:
+  clusterIP: None  # This is the key to making it headless
+  selector:
+    app: {{ .Values.postgresSTS.name }}
+  ports:
+    - port: {{.Values.postgresSTS.containers.port }}
+      targetPort: {{.Values.postgresSTS.containers.port }}

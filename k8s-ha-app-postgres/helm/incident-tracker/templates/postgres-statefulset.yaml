@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.postgresSTS.name }} 
+  namespace: demo-ha-app
+  labels:
+    app: {{ .Values.postgresSTS.name }}        
+spec:
+  serviceName: {{ .Values.postgresSTS.name }}
+  replicas: {{ .Values.postgresSTS.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.postgresSTS.name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.postgresSTS.name }}
+    spec:
+      containers:
+      - name: {{ .Values.postgresSTS.name }}
+        image: {{ .Values.postgresSTS.name }}:{{ .Values.postgresSTS.containers.release }}
+        ports:
+        - containerPort: {{ .Values.postgresSTS.containers.port }}
+          name: web
+        env:  
+        - name: POSTGRES_DB
+          valueFrom:  
+            secretKeyRef:
+              name: postgres-secret  
+              key: POSTGRES_DB
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: POSTGRES_USER
+                 
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+      volumes: 
+      - name: postgres-data
+        persistentVolumeClaim: 
+          claimName: postgres-pvc
