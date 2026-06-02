@@ -1,135 +1,146 @@
-# Kubernetes Cluster on AWS with Terraform and Ansible
+# Kubernetes Cluster on AWS – Terraform + Ansible Reference Architecture
 
-## Overview
-This project demonstrates how to create a **production-grade Kubernetes (K8s) cluster** on AWS, leveraging **Terraform** for infrastructure provisioning and **Ansible** for Kubernetes setup and deployment. The cluster consists of:
-- **3 Master Nodes**: For high availability and fault tolerance.
-- **3 Worker Nodes**: To host applications and workloads. ( Can be scaled when needed)
+A reference implementation for provisioning a production-grade, highly available Kubernetes cluster on AWS. Infrastructure is defined entirely in Terraform, with Ansible handling Kubernetes installation and node configuration.
 
-The project also incorporates AWS services to enhance the production environment, such as:
-- **Load Balancing**
-- **DNS Management (Route 53)**
-- **Security Groups**
-- **Certificate Management**
-- **EBS Volumes**
-
+> **Note:** This project documents a real infrastructure design built and tested in AWS. It is intended as a reference architecture and learning resource — review and adapt to your environment before deploying.
 
 ---
 
-## Goals
-1. Create a reliable Kubernetes cluster on AWS using EC2 instances.
-2. Apply best practices for infrastructure-as-code with Terraform.
-3. Use Ansible for automated installation and configuration of Kubernetes.
-4. Leverage AWS features to build a scalable, secure, and highly available environment.
-5. Document every step of the process for learning and portfolio purposes.
+## 🏗️ Architecture Overview
+
+![HA Kubernetes Cluster Architecture](HA_K8s_Cluster_Final.jpg)
+
+The cluster spans **3 Availability Zones** in `us-east-1`, with master and worker nodes isolated in private subnets behind an Elastic Load Balancer.
+
+| Layer | Details |
+|---|---|
+| **VPC** | 10.0.0.0/16 across 3 AZs |
+| **Public Subnets** | Internet-facing — NAT Gateways, Load Balancer |
+| **Private Subnets** | Kubernetes master and worker nodes |
+| **Master Nodes** | 3x `t3.medium` EC2 — one per AZ |
+| **Worker Nodes** | 3x `t3.large` EC2 — scalable |
+| **Load Balancer** | ELB distributing traffic to worker nodes |
+| **Storage** | EBS volumes per node |
+| **DNS** | Route 53 for domain management |
+| **TLS** | ACM certificate with HTTPS on ALB |
+| **Access** | Jumpbox in public subnet for SSH access |
 
 ---
 
-## Architecture Design
-### **AWS Resources**
-- **VPC**: A custom Virtual Private Cloud with subnets spread across multiple availability zones.
-- **Subnets**:
-  - Public Subnets: For internet-facing resources (e.g., load balancers).
-  - Private Subnets: For Kubernetes nodes.
-- **EC2 Instances**:
-  - `t3.medium` for master nodes.
-  - `t3.large` for worker nodes.
-- **IAM Roles**: To provide permissions for EC2 instances to interact with AWS services.
-- **Load Balancer**: Elastic Load Balancer for distributing traffic.
-- **DNS**: Route 53 for domain management.
+## 🛠️ Tools & Technologies
+
+- **Terraform** — all AWS infrastructure provisioned as code
+- **Ansible** — Kubernetes installation and cluster configuration
+- **AWS** — EC2, VPC, ELB, Route 53, ACM, EBS, IAM, NAT Gateway
+- **Kubernetes** — kubeadm-based cluster setup
+- **Bash** — automation scripts for cluster lifecycle
 
 ---
 
-## Tools and Technologies
-- **Terraform**: Infrastructure provisioning.
-- **Ansible**: Configuration management and Kubernetes installation.
-- **AWS**: Cloud provider for hosting the cluster.
-- **Kubernetes**: Container orchestration platform.
+## 📂 Repository Structure
+
+```
+.
+├── vpc/                        # VPC and networking
+├── subnets/                    # Public and private subnets
+├── routes/                     # Route tables and associations
+├── nat_gateways/               # NAT Gateways for private subnet egress
+├── security_groups/            # Security group rules
+├── ec2/                        # Master and worker node instances
+├── jumpbox/                    # Bastion host for SSH access
+├── elastic_load_balancer/      # ELB configuration
+├── alb_listeners/              # ALB listener rules
+├── change_alb_to_https/        # HTTPS migration config
+├── target_group_attachment/    # ELB target group bindings
+├── cert_generation_and_validation/ # ACM certificate provisioning
+├── dns_zone/                   # Route 53 hosted zone
+├── dns_records/                # Route 53 DNS records
+├── ebs_volume/                 # EBS volume definitions
+├── key_pair/                   # SSH key pair management
+├── provider/                   # AWS provider configuration
+├── ansible-playbooks/          # Kubernetes installation playbooks
+├── generate_ansible_inventory/ # Dynamic inventory generation
+│
+├── main.tf                     # Root Terraform entrypoint
+├── output.tf                   # Terraform outputs
+├── install_k8s.yml             # Ansible: install Kubernetes on all nodes
+├── join-masters.yaml           # Ansible: join master nodes to cluster
+├── join-workers.yaml           # Ansible: join worker nodes to cluster
+├── nginx.yaml                  # Sample workload manifest
+│
+├── bootstrap.sh                # Initial environment setup
+├── start_cluster.sh            # Full cluster bring-up sequence
+├── initiate-cluster.sh         # kubeadm init on primary master
+├── join_worker.sh              # Worker node join script
+├── generate_ansible_inventory.sh # Generate Ansible inventory from Terraform outputs
+├── configure-aws.sh            # AWS CLI configuration helper
+├── login.sh                    # SSH login helper via jumpbox
+└── clean.sh                    # Tear down all resources
+```
 
 ---
 
-## Step-by-Step Guide
+## ⚙️ Key Design Decisions
 
-### **Phase 1: Infrastructure Setup**
-1. **Design the VPC**:
-   - Create a custom VPC with public and private subnets.
-   - Set up internet gateways and route tables.
-2. **Provision EC2 Instances**:
-   - Launch EC2 instances for master and worker nodes.
-   - Configure security groups and IAM roles.
-
-### **Phase 2: Kubernetes Setup**
-3. **Install Kubernetes with Ansible**:
-   - Deploy Kubernetes on provisioned instances.
-   - Configure etcd, kube-apiserver, kube-scheduler, and kube-controller-manager on master nodes.
-   - Install kubelet and kube-proxy on worker nodes.
-
-### **Phase 3: AWS Integration**
-4. **Leverage AWS Features**:
-   - Configure an Elastic Load Balancer for Kubernetes services.
-   - Set up auto-scaling groups for worker nodes.
-   - Use Route 53 for DNS management.
+- **Private nodes:** Master and worker nodes have no public IPs — all access goes through the jumpbox or ELB
+- **Multi-AZ:** Control plane and workers distributed across 3 AZs for fault tolerance
+- **NAT Gateways:** One per AZ to avoid cross-AZ traffic for outbound internet access
+- **Dynamic inventory:** `generate_ansible_inventory.sh` pulls EC2 IPs from Terraform outputs — no manual inventory management
+- **HTTPS:** ALB configured with ACM certificate; HTTP redirects to HTTPS
 
 ---
 
-## How to Use
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/yourusername/aws-k8s-cluster.git
-   cd aws-k8s-cluster
+## 📦 Prerequisites
 
-2. Initialize Terraform:
+- Terraform >= 1.5
+- Ansible >= 2.12
+- AWS CLI configured with appropriate credentials
+- SSH key pair for EC2 access
+- A registered domain (for Route 53 + ACM)
 
-      terraform init
+---
 
-3. Apply the Terraform configuration:
+## 🔧 Deployment Overview
 
-      terraform apply
+```bash
+# 1. Configure AWS credentials
+./configure-aws.sh
 
-4. Run Ansible playbooks to set up Kubernetes
+# 2. Initialize and apply Terraform
+terraform init
+terraform apply
 
-      ansible-playbook -i inventory k8s-setup.yml
+# 3. Generate Ansible inventory from Terraform outputs
+./generate_ansible_inventory.sh
 
+# 4. Install Kubernetes on all nodes
+ansible-playbook -i inventory install_k8s.yml
 
-Prerequisites
-Terraform (version >= 1.5)
-Ansible (version >= 2.12)
-AWS CLI (configured with appropriate credentials)
-A valid AWS account
-SSH key pair for accessing EC2 instance
-2. Initialize Terraform:
+# 5. Initialize the cluster on the primary master
+./initiate-cluster.sh
 
-      terraform init
+# 6. Join remaining masters and workers
+ansible-playbook -i inventory join-masters.yaml
+ansible-playbook -i inventory join-workers.yaml
+```
 
-3. Apply the Terraform configuration:
+---
 
-      terraform apply
+## 🧹 Teardown
 
-4. Run Ansible playbooks to set up Kubernetes
+```bash
+./clean.sh
+terraform destroy
+```
 
-      ansible-playbook -i inventory k8s-setup.yml
+---
 
+## 📘 What This Project Demonstrates
 
-Prerequisites
-
-Terraform (version >= 1.5)
-Ansible (version >= 2.12)
-AWS CLI (configured with appropriate credentials)
-A valid AWS account
-SSH key pair for accessing EC2 instance
-
-
-Project Roadmap
-Step 1: Define the VPC (in progress).
-Step 2: Provision EC2 instances for the cluster.
-Step 3: Configure Kubernetes using Ansible.
-Step 4: Integrate AWS services like load balancing, auto-scaling, and DNS.
-
-
-Author:
-
-Ahmed Esmat
-
-
-## License
-This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
-
+- Multi-AZ AWS network design (VPC, subnets, routing, NAT)
+- Infrastructure as Code with modular Terraform
+- Kubernetes cluster bootstrap with kubeadm via Ansible
+- Load balancer configuration with TLS termination
+- Jumpbox pattern for secure private subnet access
+- Dynamic Ansible inventory generation from infrastructure outputs
+- End-to-end automation from bare AWS account to running cluster
