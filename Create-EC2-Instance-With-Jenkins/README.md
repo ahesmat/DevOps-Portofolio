@@ -1,68 +1,86 @@
-EC2 Jenkins Deployment
-This repository demonstrates the process of provisioning an EC2 instance on AWS and installing Jenkins using a series of scripts. Follow the steps below to deploy and manage the EC2 instance with Jenkins.
+# EC2 Jenkins Deployment – Terraform + Bash
 
-Prerequisites
-Before you begin, ensure that you have the following installed:
+A scripted Terraform workflow for provisioning an AWS EC2 instance and installing Jenkins automatically. Designed as a quick-start template for standing up a Jenkins server in a fresh AWS environment.
 
-Terraform (for provisioning resources on AWS)
-AWS CLI (for configuring AWS credentials)
-Git (to clone and work with the repository)
-Deployment Steps
-Follow the sequence of scripts to deploy an EC2 instance with Jenkins:
+---
 
-1. Run bootstrap.sh
-This script will:
+## 🛠️ Tools & Technologies
 
-Install Terraform and AWS CLI on your machine.
-Run terraform init to initialize Terraform and download necessary providers.
+- **Terraform** — EC2 instance provisioning
+- **Bash** — lifecycle automation scripts
+- **AWS** — EC2, Security Groups, IAM
+- **Jenkins** — installed and configured on first boot
 
-2. Run configure-aws.sh
-This script will:
+---
 
-Take your AWS Access Key ID as the first argument and AWS Secret Access Key as the second argument.
-Configure the AWS CLI with these credentials to allow communication with your AWS account.
-Usage:
+## 📂 Repository Structure
 
-./configure-aws.sh <AWS_ACCESS_KEY_ID> <AWS_SECRET_ACCESS_KEY>
+```
+.
+├── main.tf                    # Terraform configuration for EC2 instance
+├── bootstrap.sh               # Install Terraform and AWS CLI
+├── configure-aws.sh           # AWS CLI credential configuration
+├── provision-EC2-instance.sh  # Provision EC2 and install Jenkins
+├── destroy-hardware.sh        # Tear down all provisioned resources
+└── Instructions/              # Step-by-step deployment notes
+```
 
-3. Run provision-EC2-Instance.sh
-This script will:
+---
 
-Provision an EC2 instance using Terraform.
-Install Jenkins on the EC2 instance.
-Print the Jenkins URL and first-time admin password to the standard output.
-After running the script, you will see the URL to access Jenkins and the first-time login credentials.
+## 🚀 Deployment Steps
 
-4. Run destroy-hardware.sh
-This script will:
+### 1. Bootstrap the Controller Node
 
-Destroy the EC2 instance and all associated resources provisioned by Terraform.
-Clean up the environment after you're done with the EC2 instance.
+Installs Terraform and AWS CLI, then runs `terraform init`.
 
-5. login-to-created-instance.sh
-This is a temporary script generated after the EC2 instance is provisioned.
-It will be used to log into the EC2 instance.
-
-Notes
-
-Temporary Scripts: The login-to-created-instance.sh script is ephemeral, created once the instance is up and removed once the instance is destroyed. It is automatically ignored by Git (due to being listed in .gitignore).
-
-Terraform: Ensure that you have the correct AWS credentials and permissions to provision resources on AWS, including EC2 instances.
-
-Example of Running the Scripts
-
-Run bootstrap.sh to install the required tools:
+```bash
 ./bootstrap.sh
+```
 
-Configure AWS CLI with your credentials:
-./configure-aws.sh <AWS_ACCESS_KEY_ID> <AWS_SECRET_ACCESS_KEY>
+### 2. Configure AWS Credentials
 
-Provision the EC2 instance and install Jenkins:
-./provision-EC2-Instance.sh
+```bash
+aws configure
+```
 
-Destroy the EC2 instance when you're done:
+> ⚠️ Do not pass credentials as command-line arguments — they will be stored in your shell history. Use `aws configure` or environment variables instead.
+
+### 3. Provision EC2 and Install Jenkins
+
+```bash
+./provision-EC2-instance.sh
+```
+
+This will:
+- Provision the EC2 instance via Terraform
+- Install Jenkins on the instance
+- Print the Jenkins URL and first-time admin password to stdout
+
+### 4. Access Jenkins
+
+After provisioning, open the printed URL in your browser and use the admin password to complete setup.
+
+### 5. Teardown
+
+```bash
 ./destroy-hardware.sh
+```
 
-Contributing
-Feel free to fork this repository, make changes, and open pull requests. Contributions are always welcome.
+Destroys the EC2 instance and all associated AWS resources.
 
+---
+
+## 📦 Prerequisites
+
+- Terraform >= 1.x
+- AWS CLI configured with appropriate credentials
+- AWS account with EC2 permissions
+
+---
+
+## 📘 What This Project Demonstrates
+
+- Terraform-based EC2 provisioning
+- Bash scripting for infrastructure lifecycle management
+- Automated software installation on cloud instances
+- Clean separation of provision and destroy workflows
