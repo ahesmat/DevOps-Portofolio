@@ -56,6 +56,13 @@ A Bash utility that automates switching a Git repository from HTTPS to SSH authe
 
 ---
 
+## Featured Project
+
+### [AWS Infrastructure Platform](https://github.com/ahesmat/aws-infra-platform)
+Production-grade AWS infrastructure built with Terraform, GitHub Actions CI/CD, Ansible, and CloudWatch observability. Hosts a live resume page at [devops.reachlyapp.com](https://devops.reachlyapp.com).
+
+---
+
 ## 🏭 Production Background
 
 My day-to-day work at Ericsson runs at a scale where these patterns matter in production:
